@@ -175,7 +175,6 @@ function HeurigenClient(config) {
   };
   
   this.handleSearchByLocation = function(cache_key, chat_id, message_id, location) {
-    console.log(cache_key, chat_id, message_id, location);
     if (!_.isNull(location)) {
       // respond with typing
       that.respondWaiting(chat_id, 'typing');
