@@ -30,13 +30,12 @@ function HeurigenClient(config) {
         console.log("Settings cache done");
         
         var chat_id = that.getChatId(obj);
-        var message_id = that.getMessageId(obj);
-        var key = that.getRequestKey(obj);
-        var cmd = that.getRequestCmd(obj);
-        
         console.log("chat_id: " + chat_id);
+        var message_id = that.getMessageId(obj);
         console.log("message_id: " + message_id);
+        var key = that.getRequestKey(obj);
         console.log("key: " + key);
+        var cmd = that.getRequestCmd(obj);
         console.log("cmd: " + cmd);
         
         if (cmd !== null) {
@@ -118,7 +117,7 @@ function HeurigenClient(config) {
       for (var i in that.allowed_cmds) {
         if (obj.message.text.match(new RegExp('^/' + that.allowed_cmds[i]))) {
           var cmd = that.allowed_cmds[i];
-          var param = ''; //obj.message.text.substr(obj.message.text.indexOf(' ') + 1);
+          var param = obj.message.text.substr(obj.message.text.indexOf(' ') + 1);
           
           return {
             cmd: cmd,
