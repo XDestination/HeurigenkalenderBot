@@ -17,6 +17,8 @@ function updatewebhook(set_webhook) {
     certificate: set_webhook ? fs.readFileSync(config.certpath + '/' + config.domain + '.pem') : ''
   };
   
+  console.log(formdata);
+  
   var req = request.post({url: url, formData: formdata}, function (err, resp, body) {
     if (err) {
       if (set_webhook) {
