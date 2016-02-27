@@ -25,7 +25,7 @@ function Client() {
       expireAT: null
     };
     
-    console.log("Storage: " + this.storage);
+    console.log("Storage: " + JSON.stringify(this.storage));
     if (!_.isUndefined(cb)) {
       cb(true);
     }
