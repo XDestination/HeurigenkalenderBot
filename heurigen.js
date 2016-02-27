@@ -100,10 +100,10 @@ function HeurigenClient(config) {
               
               switch (value.cmd) {
                 case 'searchloc':
-                  if (_.isUndefined(location) && _.isUndefined(text)) {
+                  if (_.isNull(location) && _.isNull(text)) {
                     that.respond(chat_id, "Please send the location either as a message or via the location-picker.", message_id);
                   } else {
-                    that.handleSearchByLocation(key, chat_id, message_id, _.isUndefined(location) ? location : text);
+                    that.handleSearchByLocation(key, chat_id, message_id, _.isNull(location) ? location : text);
                   }
                   break;
                 case 'searchname':
@@ -166,11 +166,11 @@ function HeurigenClient(config) {
   };
   
   this.getRequestText = function(obj) {
-    return obj.message.text;
+    return _.isUndefined(obj.message.text) ? null : obj.message.text;
   };
   
   this.getRequestLocation = function(obj) {
-    return obj.message.location;
+    return _.isUndefined(obj.message.location) ? null : obj.message.location;
   };
   
   this.getRequestCmd = function(obj) {
