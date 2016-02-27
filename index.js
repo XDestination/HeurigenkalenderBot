@@ -31,7 +31,6 @@ function updatewebhook(set_webhook) {
       } else {
         console.log('Unsetting the Webhook succeeded');
       }
-      console.log(resp);
       console.log(body);
     }
   });
