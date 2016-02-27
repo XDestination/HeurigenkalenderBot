@@ -3,7 +3,7 @@ var config = {
 	'app': 'heurigenkalenderbot',
 	'version': '1.0.0',
 	'domain': 'XXXXXXX',
-	'port': 1212,
+	'port': 443,
 	'db': {
 		'redis': {
 		}
