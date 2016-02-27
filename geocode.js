@@ -10,7 +10,7 @@ var extra = {
 var geocoder = require('node-geocoder')(geocoderProvider, httpAdapter, extra);
 
 module.exports = {
-  gecode: function(string, callback) {
+  geocode: function(string, callback) {
     console.log(string, callback);
     geocoder.geocode(string, function(err, res) {
         console.log(err, res);
