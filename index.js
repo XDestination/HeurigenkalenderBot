@@ -12,9 +12,16 @@ var client = restify.createJsonClient({
 
 function updatewebhook(set_webhook) {
   var url = config.telegram.baseurl + '/bot' + config.telegram.token + '/setWebhook';
+  var certificate = {
+    value:  fs.readFileSync(config.certpath + '/' + config.domain + '.pem'),
+    options: {
+      filename: config.domain + '.pem',
+      contentType: 'application/x-pem-file'
+    }
+  };
   var formdata = {
     url: set_webhook ? 'https://' + config.domain + '/webhook/' + config.telegram.token : '',
-    certificate: set_webhook ? fs.readFileSync(config.certpath + '/' + config.domain + '.pem') : ''
+    certificate: set_webhook ? certificate : ''
   };
   
   console.log(formdata);
