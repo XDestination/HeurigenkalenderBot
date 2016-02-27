@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/XDestination/HeurigenkalenderBot#readme",
   "dependencies": {
+    "lodash": "^4.5.1",
     "request": "^2.69.0",
     "restify": "^4.0.4"
   }
