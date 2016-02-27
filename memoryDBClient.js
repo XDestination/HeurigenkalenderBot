@@ -12,7 +12,9 @@ function Client() {
       }
     }
     
-    cb(ret);
+    if (!.isUndefined(cb)) {
+      cb(ret);
+    }
   };
   
   this.set = function(key, value, cb) {
@@ -21,7 +23,9 @@ function Client() {
       expireAT: null
     };
     
-    cb(true);
+    if (!.isUndefined(cb)) {
+      cb(true);
+    }
     console.log("Storage: " + this.storage);
   };
   
