@@ -64,8 +64,9 @@ function HeurigenClient(config) {
                   cmd: cmd.cmd,
                   params: []
                 };
-                that.db_client.set(key, JSON.stringify(value));
-                that.db_client.expireat(key, (new Date()).getTime() / 1000 + 300);
+                that.db_client.set(key, JSON.stringify(value), function(success) {
+                  that.db_client.expireat(key, (new Date()).getTime() / 1000 + 300);
+                });
               }
               break;
             case 'searchname':
@@ -78,8 +79,9 @@ function HeurigenClient(config) {
                   cmd: cmd.cmd,
                   params: [cmd.param[1]]
                 };
-                that.db_client.set(key, JSON.stringify(value));
-                that.db_client.expireat(key, (new Date()).getTime() / 1000 + 300);
+                that.db_client.set(key, JSON.stringify(value), function(success) {
+                  that.db_client.expireat(key, (new Date()).getTime() / 1000 + 300);
+                });
               } else {
                 // ask for name to look for
                 that.respond(chat_id, "Please provide a name to look for", 
@@ -89,8 +91,9 @@ function HeurigenClient(config) {
                   cmd: cmd.cmd,
                   params: []
                 };
-                that.db_client.set(key, JSON.stringify(value));
-                that.db_client.expireat(key, (new Date()).getTime() / 1000 + 300);
+                that.db_client.set(key, JSON.stringify(value), function(success) {
+                  that.db_client.expireat(key, (new Date()).getTime() / 1000 + 300);
+                });
               }
               break;
             default:
@@ -103,6 +106,7 @@ function HeurigenClient(config) {
           }
         } else {
           var text = that.getRequestText(obj);
+          console.log(that.db_client.storage);
           that.db_client.get(key, function(resp) {
             if (resp === null) {
               // respond with unknown cmd
@@ -148,8 +152,9 @@ function HeurigenClient(config) {
                       message_id, {force_reply: true, selective: true});
                     
                     value.params.push(text);
-                    that.db_client.set(key, JSON.stringify(value));
-                    that.db_client.expireat(key, (new Date()).getTime() / 1000 + 300);
+                    that.db_client.set(key, JSON.stringify(value), function(success) {
+                      that.db_client.expireat(key, (new Date()).getTime() / 1000 + 300);
+                    });
                   }
                   break;
               }
