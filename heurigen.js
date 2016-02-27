@@ -15,9 +15,14 @@ function HeurigenClient(config) {
     }
     
     var update_id = this.getUpdateId(obj);
+    var cache_key = 'UPDATE_ID#' + update_id;
     
-    this.db_client.get('UPDATE_ID#' + update_id, function(resp) {
+    this.db_client.get(cache_key, function(resp) {
+      console.log('Cache response: ' + resp);
       if (resp === null) {
+        this.db_client.set(cache_key, 1);
+        this.db_client.expireat(cache_key, (new Date()).getTime()/1000 + 86400);
+        
         var chat_id = this.getChatId(obj);
         var message_id = this.getMessageId(obj);
         var key = this.getRequestKey(obj);
