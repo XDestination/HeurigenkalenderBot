@@ -6,6 +6,8 @@ function Client() {
   
   this.get = function(key, cb) {
     var ret = null;
+    
+    that.cleanup();
   
     if (!_.isUndefined(that.storage[key])) {
       if (that.storage[key].expireAt === null || that.storage[key].expireAt > (new Date()).getTime() / 1000) {
@@ -35,6 +37,16 @@ function Client() {
         that.storage[key].expireAt = expireAt;
       }
     });
+  };
+  
+  this.cleanup = function() {
+    if (Math.random() * 1000 < 50) {
+      for (var key in that.storage) {
+        if (!_.isNull(that.storage[key].expireAt) && !_.isUndefined(that.storage[key].expireAt) && (new Date()).getTime() / 1000 > that.storage[key].expireAt) {
+          delete that.storage[key];
+        }
+      }
+    }
   };
   
   this.end = function() {};
