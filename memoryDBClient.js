@@ -37,6 +37,7 @@ function Client() {
     that.get(key, function(ret) {
       if (ret !== null) {
         that.storage[key].expireAt = expireat;
+        console.log("Storage: " + JSON.stringify(that.storage));
       }
     });
   };
