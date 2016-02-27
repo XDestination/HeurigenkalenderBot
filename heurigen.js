@@ -178,7 +178,7 @@ function HeurigenClient(config) {
   };
   
   this.postRequest = function(path, params, cb) {
-    var url = that.telegram.baseurl'/bot' + that.telegram.token + path;
+    var url = that.telegram.baseurl + '/bot' + that.telegram.token + path;
     var req = request.post({url: url, formData: params}, cb);
   };
 }
