@@ -49,6 +49,7 @@ server.use(restify.bodyParser());
  
 server.post('/webhook/' + config.telegram.token, function (req, res, next) {
   console.log(req);
+  res.send(200);
   return next();
 });
  
