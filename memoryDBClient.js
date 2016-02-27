@@ -12,7 +12,7 @@ function Client() {
       }
     }
     
-    if (!.isUndefined(cb)) {
+    if (!_.isUndefined(cb)) {
       cb(ret);
     }
   };
@@ -23,7 +23,7 @@ function Client() {
       expireAT: null
     };
     
-    if (!.isUndefined(cb)) {
+    if (!_.isUndefined(cb)) {
       cb(true);
     }
     console.log("Storage: " + this.storage);
