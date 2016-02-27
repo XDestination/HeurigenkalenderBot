@@ -8,19 +8,19 @@ function HeurigenClient(config) {
     'searchloc', 'searchname'
   ];
   
-  this.handleRequest = function(respobj) {
+  this.handleRequest = function(obj) {
     console.log("Received request: " + JSON.stringify(obj));
     if (!that.isValidRequest(obj)) {
       console.log("Invalid Request");
       return;
     }
     
-    var update_id = that.getUpdateId(respobj);
+    var update_id = that.getUpdateId(obj);
     var cache_key = 'UPDATE_ID#' + update_id;
     
     that.db_client.get(cache_key, function(resp) {
       console.log('Cache response: ' + resp);
-      console.log(respobj);
+      console.log(obj);
       if (resp === null) {
         console.log("Settings cache");
         that.db_client.set(cache_key, 1, function(success) {
@@ -30,13 +30,13 @@ function HeurigenClient(config) {
         });
         console.log("Settings cache done");
         
-        var chat_id = that.getChatId(respobj);
+        var chat_id = that.getChatId(obj);
         console.log("chat_id: " + chat_id);
-        var message_id = that.getMessageId(respobj);
+        var message_id = that.getMessageId(obj);
         console.log("message_id: " + message_id);
-        var key = that.getRequestKey(respobj);
+        var key = that.getRequestKey(obj);
         console.log("key: " + key);
-        var cmd = that.getRequestCmd(respobj);
+        var cmd = that.getRequestCmd(obj);
         console.log("cmd: " + cmd);
         
         if (cmd !== null) {
