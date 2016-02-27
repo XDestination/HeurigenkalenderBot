@@ -1,8 +1,11 @@
 var _ = require('lodash');
+var request = require('request');
 
 function HeurigenClient(config) {
   var that = this;
-  this.rest_client = config.rest_client;
+  
+  this.telegram = config.telegram;
+  
   this.db_client = config.db_client;
   this.allowed_cmds = [
     'searchloc', 'searchname'
@@ -138,7 +141,7 @@ function HeurigenClient(config) {
     };
     
     console.log('Sending ChatAction "' + action + '"');
-    that.rest_client.post('/sendChatAction', params, function(err, req, res) {
+    that.postRequest.post('/sendChatAction', params, function(err, req, res) {
       if (err) {
         console.log('Sending ChatAction failed: ' + err);
       } else {
@@ -163,7 +166,7 @@ function HeurigenClient(config) {
     }
     
     console.log('Sending Request: ' + JSON.stringify(params));
-    that.rest_client.post('/sendMessage', params, function(err, req, res) {
+    that.postRequest('/sendMessage', params, function(err, req, res) {
       if (err) {
         console.log('Sending Request failed: ' + err);
       } else {
@@ -172,6 +175,11 @@ function HeurigenClient(config) {
         console.log(res);
       }
     });
+  };
+  
+  this.postRequest = function(path, params, cb) {
+    var url = that.telegram.baseurl'/bot' + that.telegram.token + path;
+    var req = request.post({url: url, formData: params}, cb);
   };
 }
 
