@@ -12,10 +12,19 @@ var client = restify.createJsonClient({
 
 function updatewebhook(set_webhook) {
   var url = config.telegram.baseurl + '/bot' + config.telegram.token + '/setWebhook';
+  var certificate = {
+    value:  fs.readFileSync(config.certpath + '/' + config.domain + '.pem'),
+    options: {
+      filename: config.domain + '.pem',
+      contentType: 'application/x-pem-file'
+    }
+  };
   var formdata = {
     url: set_webhook ? 'https://' + config.domain + '/webhook/' + config.telegram.token : '',
-    certificate: set_webhook ? fs.readFileSync(config.certpath + '/' + config.domain + '.pem') : ''
+    certificate: set_webhook ? certificate : ''
   };
+  
+  console.log(formdata);
   
   var req = request.post({url: url, formData: formdata}, function (err, resp, body) {
     if (err) {
@@ -48,7 +57,8 @@ server.use(restify.queryParser());
 server.use(restify.bodyParser());
  
 server.post('/webhook/' + config.telegram.token, function (req, res, next) {
-  console.log(req);
+  console.log(JSON.stringify(req.body));
+  res.send(200);
   return next();
 });
  
