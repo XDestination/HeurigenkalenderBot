@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var request = require('request');
+var geocode = require('./geocode');
 
 function HeurigenClient(config) {
   var that = this;
@@ -45,34 +46,12 @@ function HeurigenClient(config) {
         if (cmd !== null) {
           switch (cmd.cmd) {
             case 'searchloc':
-              if (cmd.param.length) {
-                // respond with typing
-                that.respondWaiting(chat_id, 'typing');
-                
-                // resolve location provided as param
-                
-                // request heurigens
-                
-                // respond with text
-                that.respond(chat_id, "1. Heuriger so und so\n2. Heuriger abs", message_id);
-              } else {
-                // ask for location
-                that.respond(chat_id, "Please provide a location to look for", 
-                  message_id, {force_reply: true, selective: true});
-                
-                var value = {
-                  cmd: cmd.cmd,
-                  params: []
-                };
-                that.db_client.set(key, JSON.stringify(value), function(success) {
-                  that.db_client.expireat(key, (new Date()).getTime() / 1000 + 300);
-                });
-              }
+              that.handleSearchByLocation(key, chat_id, message_id, cmd.param.length ? cmd.param[0] : null);
               break;
             case 'searchname':
               if (cmd.param.length) {
                 // ask for location
-                that.respond(chat_id, "Please provide a location to look for", 
+                that.respond(chat_id, "Please provide a location to look for (either by sending it as a message, or by picking it through the location-picker).", 
                   message_id, {force_reply: true, selective: true});
                   
                 var value = {
@@ -106,6 +85,8 @@ function HeurigenClient(config) {
           }
         } else {
           var text = that.getRequestText(obj);
+          var location = that.getRequestLocation(obj);
+          
           console.log(that.db_client.storage);
           that.db_client.get(key, function(resp) {
             if (resp === null) {
@@ -119,18 +100,11 @@ function HeurigenClient(config) {
               
               switch (value.cmd) {
                 case 'searchloc':
-                // respond with typing
-                that.respondWaiting(chat_id, 'typing');
-                
-                // resolve location provided as param
-                
-                // request heurigens
-                
-                // respond with text
-                that.respond(chat_id, "1. Heuriger so und so\n2. Heuriger abs", message_id);
-                
-                // delete entry for key
-                that.db_client.expireat(key, 0);
+                  if (_.isUndefined(location) && _.isUndefined(text)) {
+                    that.respond(chat_id, "Please send the location either as a message or via the location-picker.", message_id);
+                  } else {
+                    that.handleSearchByLocation(key, chat_id, message_id, _.isUndefined(location) ? location : text);
+                  }
                   break;
                 case 'searchname':
                   if (value.params.length) {
@@ -195,6 +169,10 @@ function HeurigenClient(config) {
     return obj.message.text;
   };
   
+  this.getRequestLocation = function(obj) {
+    return obj.message.location;
+  };
+  
   this.getRequestCmd = function(obj) {
     if (!_.isUndefined(obj.message.text)) {
       for (var i in that.allowed_cmds) {
@@ -257,6 +235,52 @@ function HeurigenClient(config) {
   this.postRequest = function(path, params, cb) {
     var url = that.telegram.baseurl + '/bot' + that.telegram.token + path;
     request.post({url: url, body: params, json: true}, cb);
+  };
+  
+  this.handleSearchByLocation = function(cache_key, chat_id, message_id, location) {
+    if (location) {
+      // respond with typing
+      that.respondWaiting(chat_id, 'typing');
+        
+      if (_.isString(location)) {
+        // resolve location provided as param
+        geocode.geocode(location, function(res) {
+          if (res.length) {
+            that.returnHeurigenFromLocation(chat_id, message_id, {latitude: res[0].latitude, longitude: res[0].longitude});
+          } else {
+            that.respond(chat_id, "Can't convert location. Please send a location through the location-picker.", message_id);
+          }
+        });
+      } else {
+        that.returnHeurigenFromLocation(chat_id, message_id, location);
+      }
+    } else {
+      // ask for location
+      that.respond(chat_id, "Please provide a location to look for (either by sending it as a message, or by picking it through the location-picker).", 
+        message_id, {force_reply: true, selective: true});
+      
+      var value = {
+        cmd: cmd.cmd,
+        params: []
+      };
+      that.db_client.set(cache_key, JSON.stringify(value), function(success) {
+        that.db_client.expireat(cache_key, (new Date()).getTime() / 1000 + 300);
+      });
+    }
+  };
+  
+  this.returnHeurigenFromLocation = function(cache_key, chat_id, message_id, location) {
+    // request heurigens
+  
+    // respond with text
+    that.respond(chat_id, "1. Heuriger so und so\n2. Heuriger abs", message_id);
+    
+    // clear the cache
+    that.db_client.expireat(cache_key, 0);
+  };
+  
+  this.handleSearchByName = function() {
+    
   };
 }
 
