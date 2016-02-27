@@ -22,6 +22,7 @@ function Client() {
     };
     
     cb(true);
+    console.log("Storage: " + this.storage);
   };
   
   this.expireat = function(key, expireat) {
