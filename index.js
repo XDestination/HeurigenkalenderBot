@@ -47,13 +47,14 @@ server.use(restify.acceptParser(server.acceptable));
 server.use(restify.queryParser());
 server.use(restify.bodyParser());
  
-server.get('/webhook/' + config.telegram.token, function (req, res, next) {
+server.post('/webhook/' + config.telegram.token, function (req, res, next) {
   console.log(req);
   return next();
 });
  
 server.listen(config.port, function () {
   console.log('%s listening at %s', server.name, server.url);
+  console.log('Waiting for posts to "%s"', 'https://' + config.domain + '/webhook/' + config.telegram.token);
   
   // setup the webhook
   updatewebhook(true);
