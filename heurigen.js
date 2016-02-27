@@ -72,13 +72,7 @@ function HeurigenClient(config) {
               break;
           }
         } else {
-          this.db_client.get(key, function(resp) {
-            if (resp === null) {
-              
-            } else {
-              
-            }
-          });
+          console.log("TODO");
         }
       } else {
         console.log("Duplicate request: " + update_id);
