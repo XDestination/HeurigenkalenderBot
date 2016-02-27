@@ -121,7 +121,7 @@ function HeurigenClient(config) {
       for (var i in that.allowed_cmds) {
         if (obj.message.text.match(new RegExp('^/' + that.allowed_cmds[i]))) {
           var cmd = that.allowed_cmds[i];
-          var param = obj.message.text.substr(obj.message.text.indexOf(' ') + 1);
+          var param = obj.message.text.indexOf(' ') >= 0 ? obj.message.text.substr(obj.message.text.indexOf(' ') + 1) : '';
           
           return {
             cmd: cmd,
