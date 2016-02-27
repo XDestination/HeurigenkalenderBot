@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/XDestination/HeurigenkalenderBot/issues"
   },
-  "homepage": "https://github.com/XDestination/HeurigenkalenderBot#readme"
+  "homepage": "https://github.com/XDestination/HeurigenkalenderBot#readme",
+  "dependencies": {
+    "restify": "^4.0.4"
+  }
 }
