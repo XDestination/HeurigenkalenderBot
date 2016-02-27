@@ -4,6 +4,7 @@ var config = {
 	'version': '1.0.0',
 	'domain': 'XXXXXXX',
 	'port': 443,
+	'certpath': 'xxxxxx'
 	'db': {
 		'redis': {
 		}
