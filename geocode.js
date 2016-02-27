@@ -1,8 +1,7 @@
 var config = require('./config');
 
 var geocoderProvider = 'google';
-var httpAdapter = 'http';
-// optionnal 
+var httpAdapter = 'https';
 var extra = {
     apiKey: config.google.api_key,
     formatter: null
