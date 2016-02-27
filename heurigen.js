@@ -248,9 +248,9 @@ function HeurigenClient(config) {
         
       if (_.isString(location)) {
         // resolve location provided as param
-        geocode.geocode(location, function(res) {
-            console.log(res);
-          if (res.length) {
+        geocode.geocode(location, function(err, res) {
+          console.log(err, res);
+          if (!err && res.length) {
             that.returnHeurigenFromLocation(chat_id, message_id, {latitude: res[0].latitude, longitude: res[0].longitude});
           } else {
             that.respond(chat_id, "Can't convert location. Please send a location through the location-picker.", message_id);
