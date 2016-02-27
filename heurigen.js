@@ -103,6 +103,7 @@ function HeurigenClient(config) {
                   if (_.isNull(location) && _.isNull(text)) {
                     that.respond(chat_id, "Please send the location either as a message or via the location-picker.", message_id);
                   } else {
+                    console.log(location, text);
                     that.handleSearchByLocation(key, chat_id, message_id, _.isNull(location) ? location : text);
                   }
                   break;
@@ -238,7 +239,8 @@ function HeurigenClient(config) {
   };
   
   this.handleSearchByLocation = function(cache_key, chat_id, message_id, location) {
-    if (location) {
+    console.log(cache_key, chat_id, message_id, location);
+    if (!_.isNull(location)) {
       // respond with typing
       that.respondWaiting(chat_id, 'typing');
         
