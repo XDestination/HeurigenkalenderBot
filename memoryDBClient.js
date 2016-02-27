@@ -29,7 +29,7 @@ function Client() {
     }
   };
   
-  this.expireAt = function(key, expireAt) {
+  this.expireat = function(key, expireAt) {
     that.get(key, function(ret) {
       if (ret !== null) {
         that.storage[key].expireAt = expireAt;
