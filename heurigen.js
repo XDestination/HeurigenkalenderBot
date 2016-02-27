@@ -49,31 +49,7 @@ function HeurigenClient(config) {
               that.handleSearchByLocation(key, chat_id, message_id, cmd.param.length ? cmd.param[0] : null);
               break;
             case 'searchname':
-              if (cmd.param.length) {
-                // ask for location
-                that.respond(chat_id, "Please provide a location to look for (either by sending it as a message, or by picking it through the location-picker).", 
-                  message_id, {force_reply: true, selective: true});
-                  
-                var value = {
-                  cmd: cmd.cmd,
-                  params: [cmd.param[1]]
-                };
-                that.db_client.set(key, JSON.stringify(value), function(success) {
-                  that.db_client.expireat(key, (new Date()).getTime() / 1000 + 300);
-                });
-              } else {
-                // ask for name to look for
-                that.respond(chat_id, "Please provide a name to look for", 
-                  message_id, {force_reply: true, selective: true});
-                  
-                var value = {
-                  cmd: cmd.cmd,
-                  params: []
-                };
-                that.db_client.set(key, JSON.stringify(value), function(success) {
-                  that.db_client.expireat(key, (new Date()).getTime() / 1000 + 300);
-                });
-              }
+              that.handleSearchByName(key, chat_id, message_id, cmd.param.length ? cmd.param[0] : null, null);
               break;
             default:
               // respond with unknown cmd
@@ -108,28 +84,15 @@ function HeurigenClient(config) {
                   }
                   break;
                 case 'searchname':
-                  if (value.params.length) {
-                    // respond with typing
-                    that.respondWaiting(chat_id, 'typing');
-                    
-                    // resolve location provided as param
-                    
-                    // request heurigens based on loc and name
-                    
-                    // respond with text
-                    that.respond(chat_id, "1. Heuriger so und so\n2. Heuriger abs", message_id);
-                    
-                    // delete entry for key
-                    that.db_client.expireat(key, 0);
+                  name = value.param.length ? value.param[0] : (!_.isNull(text) ? text : null);
+                  location = _.isNull(location) && !_.isNull(text) && value.param.length ? text : null;
+                  
+                  if (_.isNull(name)) {
+                    that.respond(chat_id, "Please send the name you are looking for.", message_id);
+                  } else if (_.isNull(location)) {
+                    that.respond(chat_id, "Please send the location either as a message or via the location-picker.", message_id);
                   } else {
-                    // ask for location
-                    that.respond(chat_id, "Please provide a location to look for", 
-                      message_id, {force_reply: true, selective: true});
-                    
-                    value.params.push(text);
-                    that.db_client.set(key, JSON.stringify(value), function(success) {
-                      that.db_client.expireat(key, (new Date()).getTime() / 1000 + 300);
-                    });
+                    that.handleSearchByName(key, chat_id, message_id, name, location);
                   }
                   break;
               }
@@ -284,8 +247,56 @@ function HeurigenClient(config) {
     that.db_client.expireat(cache_key, 0);
   };
   
-  this.handleSearchByName = function() {
+  this.handleSearchByName = function(cache_key, chat_id, message_id, name, location) {
+    if (_.isNull(name)) {
+      // ask for name to look for
+      that.respond(chat_id, "Please provide a name to look for", 
+        message_id, {force_reply: true, selective: true});
+        
+      var value = {
+        cmd: 'searchname',
+        params: []
+      };
+      that.db_client.set(cache_key, JSON.stringify(value), function(success) {
+        that.db_client.expireat(cache_key, (new Date()).getTime() / 1000 + 300);
+      });
+    } else if (_.isNull(location)) {
+      // ask for location
+      that.respond(chat_id, "Please provide a location to look for (either by sending it as a message, or by picking it through the location-picker).", 
+        message_id, {force_reply: true, selective: true});
+        
+      var value = {
+        cmd: 'searchname',
+        params: [name]
+      };
+      that.db_client.set(cache_key, JSON.stringify(value), function(success) {
+        that.db_client.expireat(cache_key, (new Date()).getTime() / 1000 + 300);
+      });
+    } else {
+      if (_.isString(location)) {
+        // resolve location provided as param
+        geocode.geocode(location, function(err, res) {
+          console.log(err, res);
+          if (!err && res.length) {
+            that.returnHeurigenFromNameAndLocation(cache_key, chat_id, message_id, name, {latitude: res[0].latitude, longitude: res[0].longitude});
+          } else {
+            that.respond(chat_id, "Can't convert location. Please send a location through the location-picker.", message_id);
+          }
+        });
+      } else {
+        that.returnHeurigenFromNameAndLocation(cache_key, chat_id, message_id, name, location);
+      }
+    }
+  };
+  
+  this.returnHeurigenFromNameAndLocation = function(cache_key, chat_id, message_id, name, location) {
+    // request heurigens
+  
+    // respond with text
+    that.respond(chat_id, "1. Heuriger so und so\n2. Heuriger abs", message_id);
     
+    // clear the cache
+    that.db_client.expireat(cache_key, 0);
   };
 }
 
