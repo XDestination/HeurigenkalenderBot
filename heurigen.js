@@ -104,7 +104,7 @@ function HeurigenClient(config) {
                     that.respond(chat_id, "Please send the location either as a message or via the location-picker.", message_id);
                   } else {
                     console.log(location, text);
-                    that.handleSearchByLocation(key, chat_id, message_id, _.isNull(location) ? location : text);
+                    that.handleSearchByLocation(key, chat_id, message_id, !_.isNull(location) ? location : text);
                   }
                   break;
                 case 'searchname':
