@@ -23,10 +23,10 @@ function Client() {
       expireAT: null
     };
     
+    console.log("Storage: " + this.storage);
     if (!_.isUndefined(cb)) {
       cb(true);
     }
-    console.log("Storage: " + this.storage);
   };
   
   this.expireat = function(key, expireat) {
