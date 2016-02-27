@@ -2,7 +2,7 @@ var config = {
 	'env': 'prod',
 	'app': 'heurigenkalenderbot',
 	'version': '1.0.0',
-	'domain': 'api.robomaniac.eu',
+	'domain': 'heurigenkalenderbot.robomaniac.eu',
 	'port': 1212,
 	'db': {
 		'redis': {
