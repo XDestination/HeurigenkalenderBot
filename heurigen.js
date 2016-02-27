@@ -10,6 +10,7 @@ function HeurigenClient(config) {
   this.handleRequest = function(obj) {
     console.log("Received request: " + JSON.stringify(obj));
     if (!this.isValidRequest(obj)) {
+      console.log("Invalid Request");
       return;
     }
     
