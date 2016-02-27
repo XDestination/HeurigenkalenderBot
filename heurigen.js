@@ -1,6 +1,7 @@
 var _ = require('lodash');
 
 function HeurigenClient(config) {
+  var that = this;
   this.rest_client = config.rest_client;
   this.db_client = config.db_client;
   this.allowed_cmds = [
@@ -9,29 +10,29 @@ function HeurigenClient(config) {
   
   this.handleRequest = function(obj) {
     console.log("Received request: " + JSON.stringify(obj));
-    if (!this.isValidRequest(obj)) {
+    if (!that.isValidRequest(obj)) {
       console.log("Invalid Request");
       return;
     }
     
-    var update_id = this.getUpdateId(obj);
+    var update_id = that.getUpdateId(obj);
     var cache_key = 'UPDATE_ID#' + update_id;
     
-    this.db_client.get(cache_key, function(resp) {
+    that.db_client.get(cache_key, function(resp) {
       console.log('Cache response: ' + resp);
       if (resp === null) {
         console.log("Settings cache");
-        this.db_client.set(cache_key, 1, function(success) {
+        that.db_client.set(cache_key, 1, function(success) {
           if (success) {
-            this.db_client.expireat(cache_key, (new Date()).getTime()/1000 + 86400);
+            that.db_client.expireat(cache_key, (new Date()).getTime()/1000 + 86400);
           }
         });
         console.log("Settings cache done");
         
-        var chat_id = this.getChatId(obj);
-        var message_id = this.getMessageId(obj);
-        var key = this.getRequestKey(obj);
-        var cmd = this.getRequestCmd(obj);
+        var chat_id = that.getChatId(obj);
+        var message_id = that.getMessageId(obj);
+        var key = that.getRequestKey(obj);
+        var cmd = that.getRequestCmd(obj);
         
         console.log("chat_id: " + chat_id);
         console.log("message_id: " + message_id);
@@ -43,7 +44,7 @@ function HeurigenClient(config) {
             case 'searchloc':
               if (cmd.param.length) {
                 // respond with typing
-                this.respondWaiting(chat_id, 'typing');
+                that.respondWaiting(chat_id, 'typing');
                 
                 // resolve location provided as param
                 
@@ -52,28 +53,31 @@ function HeurigenClient(config) {
                 // respond with text
               } else {
                 // ask for location
-                this.respond(chat_id, "Please provide a location to look for", message_id, {force_reply: true, selective: true});
+                that.respond(chat_id, "Please provide a location to look for", 
+                  message_id, {force_reply: true, selective: true});
                 
                 var obj = {};
-                this.db_client.set(key, JSON.stringify());
-                this.db_client.expireat(key, (new Date()).getTime() / 1000 + 300);
+                that.db_client.set(key, JSON.stringify());
+                that.db_client.expireat(key, (new Date()).getTime() / 1000 + 300);
               }
               break;
             case 'searchname':
               if (cmd.param.length) {
                 // ask for location
-                this.respond(chat_id, "Please provide a location to look for", message_id, {force_reply: true, selective: true});
+                that.respond(chat_id, "Please provide a location to look for", 
+                  message_id, {force_reply: true, selective: true});
               } else {
                 // ask for name to look for
-                this.respond(chat_id, "Please provide a name to look for", message_id, {force_reply: true, selective: true});
+                that.respond(chat_id, "Please provide a name to look for", 
+                  message_id, {force_reply: true, selective: true});
               }
               break;
             default:
               // respond with unknown cmd
-              this.respond(chat_id, "You entered an unknown command!", message_id);
+              that.respond(chat_id, "You entered an unknown command!", message_id);
               
               // delete entry for key
-              this.db_client.expireat(key, 0);
+              that.db_client.expireat(key, 0);
               break;
           }
         } else {
@@ -111,9 +115,9 @@ function HeurigenClient(config) {
   
   this.getRequestCmd = function(obj) {
     if (!_.isUndefined(obj.message.text)) {
-      for (var i in this.allowed_cmds) {
-        if (obj.message.text.match(new RegExp('^/' + this.allowed_cmds[i]))) {
-          var cmd = this.allowed_cmds[i];
+      for (var i in that.allowed_cmds) {
+        if (obj.message.text.match(new RegExp('^/' + that.allowed_cmds[i]))) {
+          var cmd = that.allowed_cmds[i];
           var param = obj.message.text.substr(obj.message.text.indexOf(' ')+1);
           
           return {
@@ -134,7 +138,7 @@ function HeurigenClient(config) {
     };
     
     console.log('Sending ChatAction "' + action + '"');
-    this.rest_client.post('/sendChatAction', params, function(err, req, res) {
+    that.rest_client.post('/sendChatAction', params, function(err, req, res) {
       if (err) {
         console.log('Sending ChatAction failed: ' + err);
       } else {
@@ -157,7 +161,7 @@ function HeurigenClient(config) {
     }
     
     console.log('Sending Request: ' + JSON.stringify(params));
-    this.rest_client.post('/sendMessage', params, function(err, req, res) {
+    that.rest_client.post('/sendMessage', params, function(err, req, res) {
       if (err) {
         console.log('Sending Request failed: ' + err);
       } else {
