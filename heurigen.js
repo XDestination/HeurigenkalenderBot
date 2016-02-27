@@ -257,7 +257,7 @@ function HeurigenClient(config) {
           }
         });
       } else {
-        that.returnHeurigenFromLocation(chat_id, message_id, location);
+        that.returnHeurigenFromLocation(cache_key, chat_id, message_id, location);
       }
     } else {
       // ask for location
