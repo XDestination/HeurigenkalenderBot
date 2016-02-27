@@ -38,7 +38,7 @@ function HeurigenClient(config) {
             this.db_client.expireat(key, (new Date()).getTime() / 1000 + 300);
           }
           break;
-        case 'searchname';
+        case 'searchname':
           if (cmd.param.length) {
             // ask for location
             this.respond(chat_id, "Please provide a location to look for", message_id, {force_reply: true, selective: true});
