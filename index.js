@@ -26,23 +26,20 @@ function updatewebhook(set_webhook) {
     certificate: set_webhook ? certificate : ''
   };
   
-  console.log(formdata);
-  
   var req = request.post({url: url, formData: formdata}, function (err, resp, body) {
-    if (err) {
+    if (err || body.ok) {
       if (set_webhook) {
         console.log('Setting the Webhook failed');
       } else {
         console.log('Unsetting the Webhook failed');
       }
-      console.log(err);
+      console.log(err, body);
     } else {
       if (set_webhook) {
         console.log('Setting the Webhook succeeded');
       } else {
         console.log('Unsetting the Webhook succeeded');
       }
-      console.log(body);
     }
   });
 }
@@ -59,7 +56,7 @@ server.use(restify.queryParser());
 server.use(restify.bodyParser());
  
 server.post('/webhook/' + config.telegram.token, function (req, res, next) {
-  console.log(JSON.stringify(req.body));
+  console.log('Webhook: ' + JSON.stringify(req.body));
   
   // handle the request
   heurigen_client.handleRequest(req.body);
@@ -71,7 +68,7 @@ server.post('/webhook/' + config.telegram.token, function (req, res, next) {
  
 server.listen(config.port, function () {
   console.log('%s listening at %s', server.name, server.url);
-  console.log('Waiting for posts to "%s"', 'https://' + config.domain + '/webhook/' + config.telegram.token);
+  //console.log('Waiting for posts to "%s"', 'https://' + config.domain + '/webhook/' + config.telegram.token);
   
   // setup the webhook
   updatewebhook(true);
