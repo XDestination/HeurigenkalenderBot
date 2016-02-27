@@ -8,62 +8,76 @@ function HeurigenClient(config) {
   ];
   
   this.handleRequest = function(obj) {
+    console.log("Received request: " + JSON.stringify(obj));
     if (!this.isValidRequest(obj)) {
       return;
     }
     
-    var chat_id = this.getChatId(obj);
-    var message_id = this.getMessageId(obj);
-    var key = this.getRequestKey(obj);
-    var cmd = this.getRequestCmd(obj);
+    var update_id = this.getUpdateId(obj);
     
-    if (cmd !== null) {
-      switch (cmd.cmd) {
-        case 'searchloc':
-          if (cmd.param.length) {
-            // respond with typing
-            this.respondWaiting(chat_id, 'typing');
-            
-            // resolve location provided as param
-            
-            // request heurigens
-            
-            // respond with text
-          } else {
-            // ask for location
-            this.respond(chat_id, "Please provide a location to look for", message_id, {force_reply: true, selective: true});
-            
-            var obj = {};
-            this.db_client.set(key, JSON.stringify());
-            this.db_client.expireat(key, (new Date()).getTime() / 1000 + 300);
+    this.db_client.get('UPDATE_ID#' + update_id, function(resp) {
+      if (resp === null) {
+        var chat_id = this.getChatId(obj);
+        var message_id = this.getMessageId(obj);
+        var key = this.getRequestKey(obj);
+        var cmd = this.getRequestCmd(obj);
+        
+        console.log("chat_id: " + chat_id);
+        console.log("message_id: " + message_id);
+        console.log("key: " + key);
+        console.log("cmd: " + cmd);
+        
+        if (cmd !== null) {
+          switch (cmd.cmd) {
+            case 'searchloc':
+              if (cmd.param.length) {
+                // respond with typing
+                this.respondWaiting(chat_id, 'typing');
+                
+                // resolve location provided as param
+                
+                // request heurigens
+                
+                // respond with text
+              } else {
+                // ask for location
+                this.respond(chat_id, "Please provide a location to look for", message_id, {force_reply: true, selective: true});
+                
+                var obj = {};
+                this.db_client.set(key, JSON.stringify());
+                this.db_client.expireat(key, (new Date()).getTime() / 1000 + 300);
+              }
+              break;
+            case 'searchname':
+              if (cmd.param.length) {
+                // ask for location
+                this.respond(chat_id, "Please provide a location to look for", message_id, {force_reply: true, selective: true});
+              } else {
+                // ask for name to look for
+                this.respond(chat_id, "Please provide a name to look for", message_id, {force_reply: true, selective: true});
+              }
+              break;
+            default:
+              // respond with unknown cmd
+              this.respond(chat_id, "You entered an unknown command!", message_id);
+              
+              // delete entry for key
+              this.db_client.expireat(key, 0);
+              break;
           }
-          break;
-        case 'searchname':
-          if (cmd.param.length) {
-            // ask for location
-            this.respond(chat_id, "Please provide a location to look for", message_id, {force_reply: true, selective: true});
-          } else {
-            // ask for name to look for
-            this.respond(chat_id, "Please provide a name to look for", message_id, {force_reply: true, selective: true});
-          }
-          break;
-        default:
-          // respond with unknown cmd
-          this.respond(chat_id, "You entered an unknown command!", message_id);
-          
-          // delete entry for key
-          this.db_client.expireat(key, 0);
-          break;
-      }
-    } else {
-      this.db_client.get(key, function(resp) {
-        if (resp === null) {
-          
         } else {
-          
+          this.db_client.get(key, function(resp) {
+            if (resp === null) {
+              
+            } else {
+              
+            }
+          });
         }
-      });
-    }
+      } else {
+        console.log("Duplicate request: " + update_id);
+      }
+    });
   };
   
   this.isValidRequest = function(obj) {
@@ -72,6 +86,10 @@ function HeurigenClient(config) {
     } else {
       return false;
     }
+  };
+  
+  this.getUpdateId = function(obj) {
+    return obj.update_id;
   };
   
   this.getChatId = function(obj) {
