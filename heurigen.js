@@ -40,7 +40,7 @@ function HeurigenClient(config) {
         var key = that.getRequestKey(obj);
         console.log("key: " + key);
         var cmd = that.getRequestCmd(obj);
-        console.log("cmd: " + cmd);
+        console.log("cmd: " + JSON.stringify(cmd));
         
         if (cmd !== null) {
           switch (cmd.cmd) {
@@ -146,7 +146,6 @@ function HeurigenClient(config) {
         console.log('Sending ChatAction failed: ' + err);
       } else {
         console.log('Sending ChatAction succeeded:');
-        console.log(req);
         console.log(res);
       }
     });
@@ -171,7 +170,6 @@ function HeurigenClient(config) {
         console.log('Sending Request failed: ' + err);
       } else {
         console.log('Sending Request succeeded:');
-        console.log(req);
         console.log(res);
       }
     });
