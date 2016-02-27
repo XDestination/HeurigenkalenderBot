@@ -12,6 +12,6 @@ var geocoder = require('node-geocoder')(geocoderProvider, httpAdapter, extra);
 module.exports = {
   gecode: function(string, callback) {
     console.log(string, callback);
-    gecoder.geocode(string, callback);
+    geocoder.geocode(string, callback);
   }
 };
