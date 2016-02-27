@@ -5,14 +5,9 @@ function Client() {
   this.storage = {};
   
   this.get = function(key, cb) {
-    console.log("Calling get: ", arguments);
     var ret = null;
   
-    console.log("Storage: " + JSON.stringify(that.storage));
-    console.log(!_.isUndefined(that.storage[key]));
     if (!_.isUndefined(that.storage[key])) {
-    console.log(that.storage[key].expireAt === null);
-    console.log(that.storage[key].expireAt < (new Date()).getTime() / 1000);
       if (that.storage[key].expireAt === null || that.storage[key].expireAt > (new Date()).getTime() / 1000) {
         ret = that.storage[key].value;
       }
@@ -24,27 +19,21 @@ function Client() {
   };
   
   this.set = function(key, value, cb) {
-    console.log("Calling set: ", arguments);
     that.storage[key] = {
       value: value,
       expireAt: null
     };
     
-    console.log("Storage: " + JSON.stringify(that.storage));
     if (!_.isUndefined(cb)) {
       cb(true);
     }
   };
   
   this.expireAt = function(key, expireAt) {
-    console.log("Calling expireAt: ", arguments);
     that.get(key, function(ret) {
-      console.log("Cache Get response: " + ret);
       if (ret !== null) {
         that.storage[key].expireAt = expireAt;
-        console.log("Storage: " + JSON.stringify(that.storage));
       }
-      else {console.log("NOT FOUND");}
     });
   };
   
