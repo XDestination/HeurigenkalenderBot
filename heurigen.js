@@ -20,6 +20,7 @@ function HeurigenClient(config) {
     
     that.db_client.get(cache_key, function(resp) {
       console.log('Cache response: ' + resp);
+      console.log(obj);
       if (resp === null) {
         console.log("Settings cache");
         that.db_client.set(cache_key, 1, function(success) {
