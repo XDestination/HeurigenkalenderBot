@@ -4,7 +4,10 @@ var config = {
 	'version': '1.0.0',
 	'domain': 'XXXXXXX',
 	'port': 443,
-	'certpath': 'xxxxxx'
+	'certpath': 'xxxxxx',
+	'telegram': {
+		'token': 'xxxxxxx'
+	},
 	'db': {
 		'redis': {
 		}
