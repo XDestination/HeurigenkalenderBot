@@ -1,31 +1,47 @@
-var storage = {};
+var _ = require('lodash');
 
-module.exports = {
-  get: function(key, cb) {
+function Client() {
+  var that = this;
+  this.storage = {};
+  
+  this.get = function(key, cb) {
     var ret = null;
   
-    if (tyoeof storage[key] !== 'undefined') {
-      if (storage[key].expireAt === null || storage[key].expireAt < (new Date()).getTime() / 1000) {
-        ret = storage[key].value;
+    if (!_.isUndefined(that.storage[key])) {
+      if (that.storage[key].expireAt === null || that.storage[key].expireAt > (new Date()).getTime() / 1000) {
+        ret = that.storage[key].value;
       }
     }
     
-    cb(ret);
-  },
-  set: function(key, value, cb) {
-    storage[key] = {
+    if (!_.isUndefined(cb)) {
+      cb(ret);
+    }
+  };
+  
+  this.set = function(key, value, cb) {
+    that.storage[key] = {
       value: value,
-      expireAT: null
+      expireAt: null
     };
     
-    cb(true);
-  },
-  expireat: function(key, expireat) {
-    this.get(key, function(ret) {
+    if (!_.isUndefined(cb)) {
+      cb(true);
+    }
+  };
+  
+  this.expireat = function(key, expireAt) {
+    that.get(key, function(ret) {
       if (ret !== null) {
-        storage[key].expireAt = expireat;
+        that.storage[key].expireAt = expireAt;
       }
     });
-  },
-  end: function() {}
+  };
+  
+  this.end = function() {};
+}
+
+module.exports = {
+  client: function() {
+    return new Client();
+  }
 };

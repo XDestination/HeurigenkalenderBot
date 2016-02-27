@@ -3,11 +3,13 @@ var fs = require('fs');
 var request = require('request');
 
 var config = require('./config');
+var heurigen = require('./heurigen');
+var memory_db_client = require('./memoryDBClient');
 
-// setup a client to be used to do requests
-var client = restify.createJsonClient({
-  url: config.telegram.baseurl + '/bot' + config.telegram.token,
-  version: '*'
+// init the heurigen client
+var heurigen_client = heurigen.client({
+  telegram: config.telegram,
+  db_client: memory_db_client.client()
 });
 
 function updatewebhook(set_webhook) {
@@ -58,6 +60,11 @@ server.use(restify.bodyParser());
  
 server.post('/webhook/' + config.telegram.token, function (req, res, next) {
   console.log(JSON.stringify(req.body));
+  
+  // handle the request
+  heurigen_client.handleRequest(req.body);
+  
+  // ack the request
   res.send(200);
   return next();
 });
