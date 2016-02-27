@@ -60,8 +60,11 @@ function HeurigenClient(config) {
                 that.respond(chat_id, "Please provide a location to look for", 
                   message_id, {force_reply: true, selective: true});
                 
-                var x = {};
-                that.db_client.set(key, JSON.stringify(x));
+                var value = {
+                  cmd: cmd.cmd,
+                  params: []
+                };
+                that.db_client.set(key, JSON.stringify(value));
                 that.db_client.expireat(key, (new Date()).getTime() / 1000 + 300);
               }
               break;
@@ -70,10 +73,24 @@ function HeurigenClient(config) {
                 // ask for location
                 that.respond(chat_id, "Please provide a location to look for", 
                   message_id, {force_reply: true, selective: true});
+                  
+                var value = {
+                  cmd: cmd.cmd,
+                  params: [cmd.param[1]]
+                };
+                that.db_client.set(key, JSON.stringify(value));
+                that.db_client.expireat(key, (new Date()).getTime() / 1000 + 300);
               } else {
                 // ask for name to look for
                 that.respond(chat_id, "Please provide a name to look for", 
                   message_id, {force_reply: true, selective: true});
+                  
+                var value = {
+                  cmd: cmd.cmd,
+                  params: []
+                };
+                that.db_client.set(key, JSON.stringify(value));
+                that.db_client.expireat(key, (new Date()).getTime() / 1000 + 300);
               }
               break;
             default:
@@ -85,7 +102,53 @@ function HeurigenClient(config) {
               break;
           }
         } else {
-          console.log("TODO");
+          var text = that.getRequestText(obj);
+          that.db_client.get(key, function(resp) {
+            if (resp === null) {
+              // respond with unknown cmd
+              that.respond(chat_id, "Please enter a command first!", message_id);
+              
+              // delete entry for key
+              that.db_client.expireat(key, 0);
+            } else {
+              var value = JSON.parse(resp);
+              
+              switch (value.cmd) {
+                case 'searchloc':
+                // respond with typing
+                that.respondWaiting(chat_id, 'typing');
+                
+                // resolve location provided as param
+                
+                // request heurigens
+                
+                // respond with text
+                that.respond(chat_id, "1. Heuriger so und so\n2. Heuriger abs", message_id);
+                  break;
+                case 'searchname':
+                  if (value.params.length) {
+                    // respond with typing
+                    that.respondWaiting(chat_id, 'typing');
+                    
+                    // resolve location provided as param
+                    
+                    // request heurigens based on loc and name
+                    
+                    // respond with text
+                    that.respond(chat_id, "1. Heuriger so und so\n2. Heuriger abs", message_id);
+                  } else {
+                    // ask for location
+                    that.respond(chat_id, "Please provide a location to look for", 
+                      message_id, {force_reply: true, selective: true});
+                    
+                    value.params.push(text);
+                    that.db_client.set(key, JSON.stringify(value));
+                    that.db_client.expireat(key, (new Date()).getTime() / 1000 + 300);
+                  }
+                  break;
+              }
+            }
+          });
         }
       } else {
         console.log("Duplicate request: " + update_id);
