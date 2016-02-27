@@ -20,8 +20,11 @@ function HeurigenClient(config) {
     this.db_client.get(cache_key, function(resp) {
       console.log('Cache response: ' + resp);
       if (resp === null) {
-        this.db_client.set(cache_key, 1);
-        this.db_client.expireat(cache_key, (new Date()).getTime()/1000 + 86400);
+        this.db_client.set(cache_key, 1, function(success) {
+          if (success) {
+            this.db_client.expireat(cache_key, (new Date()).getTime()/1000 + 86400);
+          }
+        });
         
         var chat_id = this.getChatId(obj);
         var message_id = this.getMessageId(obj);
