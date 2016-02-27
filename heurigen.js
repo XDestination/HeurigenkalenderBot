@@ -80,7 +80,7 @@ function HeurigenClient(config) {
                   break;
                 case 'searchname':
                   name = value.params.length ? value.params[0] : (!_.isNull(text) ? text : null);
-                  location = _.isNull(location) && !_.isNull(text) && value.params.length ? text : null;
+                  location = _.isNull(location) ? (!_.isNull(text) && value.params.length ? text : null) : location;
                   
                   that.handleSearchByName(key, chat_id, message_id, name, location);
                   break;
