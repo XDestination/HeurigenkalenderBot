@@ -124,6 +124,9 @@ function HeurigenClient(config) {
                 
                 // respond with text
                 that.respond(chat_id, "1. Heuriger so und so\n2. Heuriger abs", message_id);
+                
+                // delete entry for key
+                that.db_client.expireat(key, 0);
                   break;
                 case 'searchname':
                   if (value.params.length) {
@@ -136,6 +139,9 @@ function HeurigenClient(config) {
                     
                     // respond with text
                     that.respond(chat_id, "1. Heuriger so und so\n2. Heuriger abs", message_id);
+                    
+                    // delete entry for key
+                    that.db_client.expireat(key, 0);
                   } else {
                     // ask for location
                     that.respond(chat_id, "Please provide a location to look for", 
