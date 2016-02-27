@@ -84,8 +84,8 @@ function HeurigenClient(config) {
                   }
                   break;
                 case 'searchname':
-                  name = value.param.length ? value.param[0] : (!_.isNull(text) ? text : null);
-                  location = _.isNull(location) && !_.isNull(text) && value.param.length ? text : null;
+                  name = value.params.length ? value.params[0] : (!_.isNull(text) ? text : null);
+                  location = _.isNull(location) && !_.isNull(text) && value.params.length ? text : null;
                   
                   if (_.isNull(name)) {
                     that.respond(chat_id, "Please send the name you are looking for.", message_id);
