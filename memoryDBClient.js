@@ -35,10 +35,12 @@ function Client() {
   this.expireat = function(key, expireat) {
     console.log("Calling expireat: ", arguments);
     that.get(key, function(ret) {
+      console.log("Cache Get response: " + ret);
       if (ret !== null) {
         that.storage[key].expireAt = expireat;
         console.log("Storage: " + JSON.stringify(that.storage));
       }
+      else {console.log("NOT FOUND");}
     });
   };
   
