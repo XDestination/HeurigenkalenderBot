@@ -8,7 +8,8 @@ function HeurigenClient(config) {
     'searchloc', 'searchname'
   ];
   
-  this.handleRequest = function(obj) {
+  this.handleRequest = function(respobj) {
+    var obj = respobj
     console.log("Received request: " + JSON.stringify(obj));
     if (!that.isValidRequest(obj)) {
       console.log("Invalid Request");
