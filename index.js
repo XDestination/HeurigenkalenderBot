@@ -15,7 +15,7 @@ var client = restify.createJsonClient({
 // init the heurigen client
 var heurigen_client = heurigen.client({
   rest_client: client,
-  db_client: memory_db_client
+  db_client: memory_db_client.client()
 });
 
 function updatewebhook(set_webhook) {
