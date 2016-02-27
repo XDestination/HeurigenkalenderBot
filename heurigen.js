@@ -141,7 +141,7 @@ function HeurigenClient(config) {
     };
     
     console.log('Sending ChatAction "' + action + '"');
-    that.postRequest.post('/sendChatAction', params, function(err, req, res) {
+    that.postRequest('/sendChatAction', params, function(err, req, res) {
       if (err) {
         console.log('Sending ChatAction failed: ' + err);
       } else {
