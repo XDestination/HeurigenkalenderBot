@@ -76,24 +76,13 @@ function HeurigenClient(config) {
               
               switch (value.cmd) {
                 case 'searchloc':
-                  if (_.isNull(location) && _.isNull(text)) {
-                    that.respond(chat_id, "Please send the location either as a message or via the location-picker.", message_id);
-                  } else {
-                    console.log(location, text);
-                    that.handleSearchByLocation(key, chat_id, message_id, !_.isNull(location) ? location : text);
-                  }
+                  that.handleSearchByLocation(key, chat_id, message_id, !_.isNull(location) ? location : text);
                   break;
                 case 'searchname':
                   name = value.params.length ? value.params[0] : (!_.isNull(text) ? text : null);
                   location = _.isNull(location) && !_.isNull(text) && value.params.length ? text : null;
                   
-                  if (_.isNull(name)) {
-                    that.respond(chat_id, "Please send the name you are looking for.", message_id);
-                  } else if (_.isNull(location)) {
-                    that.respond(chat_id, "Please send the location either as a message or via the location-picker.", message_id);
-                  } else {
-                    that.handleSearchByName(key, chat_id, message_id, name, location);
-                  }
+                  that.handleSearchByName(key, chat_id, message_id, name, location);
                   break;
               }
             }
