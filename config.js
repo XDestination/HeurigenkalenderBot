@@ -9,6 +9,9 @@ var config = {
 		'baseurl': 'https://api.telegram.org',
 		'token': 'xxxxxxx'
 	},
+	'google': {
+		'api_key': 'AIzaSyDFbl0ACj4o5z2CijVrdl9Qle1-hRcc_4g'
+	},
 	'db': {
 		'redis': {
 		}
