@@ -8,6 +8,7 @@ function Client() {
     console.log("Calling get: ", arguments);
     var ret = null;
   
+    console.log("Storage: " + JSON.stringify(that.storage));
     if (!_.isUndefined(that.storage[key])) {
       if (that.storage[key].expireAt === null || that.storage[key].expireAt < (new Date()).getTime() / 1000) {
         ret = that.storage[key].value;
