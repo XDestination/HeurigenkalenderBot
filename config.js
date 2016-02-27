@@ -6,6 +6,7 @@ var config = {
 	'port': 443,
 	'certpath': 'xxxxxx',
 	'telegram': {
+		'baseurl': 'https://api.telegram.org',
 		'token': 'xxxxxxx'
 	},
 	'db': {
