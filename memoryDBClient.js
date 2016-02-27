@@ -4,6 +4,7 @@ function Client() {
   this.storage = {};
   
   this.get = function(key, cb) {
+    console.log("Calling get: ", arguments);
     var ret = null;
   
     if (!_.isUndefined(this.storage[key])) {
@@ -18,6 +19,7 @@ function Client() {
   };
   
   this.set = function(key, value, cb) {
+    console.log("Calling set: ", arguments);
     this.storage[key] = {
       value: value,
       expireAT: null
@@ -30,6 +32,7 @@ function Client() {
   };
   
   this.expireat = function(key, expireat) {
+    console.log("Calling expireat: ", arguments);
     this.get(key, function(ret) {
       if (ret !== null) {
         this.storage[key].expireAt = expireat;
