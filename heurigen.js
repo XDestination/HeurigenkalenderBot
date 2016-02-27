@@ -54,6 +54,7 @@ function HeurigenClient(config) {
                 // request heurigens
                 
                 // respond with text
+                that.respond(chat_id, "1. Heuriger so und so\n2. Heuriger abs", message_id);
               } else {
                 // ask for location
                 that.respond(chat_id, "Please provide a location to look for", 
