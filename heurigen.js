@@ -53,8 +53,7 @@ function HeurigenClient(config) {
         } else {
           var text = that.getRequestText(obj);
           var location = that.getRequestLocation(obj);
-          
-          console.log(that.db_client.storage);
+
           that.db_client.get(key, function(resp) {
             if (resp === null) {
               // respond with unknown cmd
