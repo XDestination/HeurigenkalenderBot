@@ -142,7 +142,9 @@ function HeurigenClient(config) {
       if (err) {
         console.log('Sending ChatAction failed: ' + err);
       } else {
-        console.log('Sending ChatAction succeeded: ' + res);
+        console.log('Sending ChatAction succeeded:');
+        console.log(req);
+        console.log(res);
       }
     });
   };
@@ -165,7 +167,9 @@ function HeurigenClient(config) {
       if (err) {
         console.log('Sending Request failed: ' + err);
       } else {
-        console.log('Sending Request succeeded: ' + res);
+        console.log('Sending Request succeeded:');
+        console.log(req);
+        console.log(res);
       }
     });
   };
