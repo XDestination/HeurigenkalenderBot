@@ -13,9 +13,8 @@ function HeurigenClient(config) {
   ];
   
   this.handleRequest = function(obj) {
-    console.log("Received request: " + JSON.stringify(obj));
     if (!that.isValidRequest(obj)) {
-      console.log("Invalid Request");
+      console.log("Invalid Request: " + JSON.stringify(obj));
       return;
     }
     
@@ -23,25 +22,17 @@ function HeurigenClient(config) {
     var cache_key = 'UPDATE_ID#' + update_id;
     
     that.db_client.get(cache_key, function(resp) {
-      console.log('Cache response: ' + resp);
-      console.log(obj);
       if (resp === null) {
-        console.log("Settings cache");
         that.db_client.set(cache_key, 1, function(success) {
           if (success) {
             that.db_client.expireat(cache_key, (new Date()).getTime()/1000 + 86400);
           }
         });
-        console.log("Settings cache done");
         
         var chat_id = that.getChatId(obj);
-        console.log("chat_id: " + chat_id);
         var message_id = that.getMessageId(obj);
-        console.log("message_id: " + message_id);
         var key = that.getRequestKey(obj);
-        console.log("key: " + key);
         var cmd = that.getRequestCmd(obj);
-        console.log("cmd: " + JSON.stringify(cmd));
         
         if (cmd !== null) {
           switch (cmd.cmd) {
@@ -89,7 +80,7 @@ function HeurigenClient(config) {
           });
         }
       } else {
-        console.log("Duplicate request: " + update_id);
+        console.log("Duplicate Webhook received: " + update_id);
       }
     });
   };
@@ -149,14 +140,11 @@ function HeurigenClient(config) {
       chat_id: chat_id,
       action: action
     };
-    
-    console.log('Sending ChatAction "' + action + '"');
+
     that.postRequest('/sendChatAction', params, function(err, req, res) {
-      if (err) {
-        console.log('Sending ChatAction failed: ' + err);
-      } else {
-        console.log('Sending ChatAction succeeded:');
-        console.log(res);
+      if (err || !res.ok) {
+        console.log('Sending ChatAction failed:');
+        console.log(err, res);
       }
     });
   };
@@ -173,14 +161,11 @@ function HeurigenClient(config) {
     if (!_.isUndefined(reply_markup)) {
       params.reply_markup = reply_markup;
     }
-    
-    console.log('Sending Request: ' + JSON.stringify(params));
+
     that.postRequest('/sendMessage', params, function(err, req, res) {
-      if (err) {
-        console.log('Sending Request failed: ' + err);
-      } else {
-        console.log('Sending Request succeeded:');
-        console.log(res);
+      if (err || !res.ok) {
+        console.log('Sending Request failed:');
+        console.log(err, res);
       }
     });
   };
@@ -195,17 +180,15 @@ function HeurigenClient(config) {
     if (!_.isNull(location)) {
       // respond with typing
       that.respondWaiting(chat_id, 'typing');
-      
-      console.log(location);
         
       if (_.isString(location)) {
         // resolve location provided as param
         geocode.geocode(location, function(err, res) {
-          console.log(err, res);
           if (!err && res.length) {
             that.returnHeurigenFromLocation(cache_key, chat_id, message_id, {latitude: res[0].latitude, longitude: res[0].longitude});
           } else {
             that.respond(chat_id, "Can't convert location. Please send a location through the location-picker.", message_id);
+            console.log(err, res);
           }
         });
       } else {
@@ -265,11 +248,11 @@ function HeurigenClient(config) {
       if (_.isString(location)) {
         // resolve location provided as param
         geocode.geocode(location, function(err, res) {
-          console.log(err, res);
           if (!err && res.length) {
             that.returnHeurigenFromNameAndLocation(cache_key, chat_id, message_id, name, {latitude: res[0].latitude, longitude: res[0].longitude});
           } else {
             that.respond(chat_id, "Can't convert location. Please send a location through the location-picker.", message_id);
+            console.log(err, res);
           }
         });
       } else {
