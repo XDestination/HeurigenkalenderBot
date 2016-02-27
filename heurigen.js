@@ -260,7 +260,7 @@ function HeurigenClient(config) {
         message_id, {force_reply: true, selective: true});
       
       var value = {
-        cmd: cmd.cmd,
+        cmd: 'searchloc',
         params: []
       };
       that.db_client.set(cache_key, JSON.stringify(value), function(success) {
