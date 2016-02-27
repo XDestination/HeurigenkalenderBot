@@ -46,10 +46,10 @@ function HeurigenClient(config) {
         if (cmd !== null) {
           switch (cmd.cmd) {
             case 'searchloc':
-              that.handleSearchByLocation(key, chat_id, message_id, cmd.param.length ? cmd.param[0] : null);
+              that.handleSearchByLocation(key, chat_id, message_id, cmd.param.length ? cmd.param : null);
               break;
             case 'searchname':
-              that.handleSearchByName(key, chat_id, message_id, cmd.param.length ? cmd.param[0] : null, null);
+              that.handleSearchByName(key, chat_id, message_id, cmd.param.length ? cmd.param : null, null);
               break;
             default:
               // respond with unknown cmd
