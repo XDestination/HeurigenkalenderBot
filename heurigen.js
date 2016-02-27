@@ -191,6 +191,10 @@ function HeurigenClient(config) {
     return obj.message.from.id + '#' + obj.message.chat.id;
   };
   
+  this.getRequestText = function(obj) {
+    return obj.message.text;
+  };
+  
   this.getRequestCmd = function(obj) {
     if (!_.isUndefined(obj.message.text)) {
       for (var i in that.allowed_cmds) {
